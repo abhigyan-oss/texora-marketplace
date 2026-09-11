@@ -10,8 +10,8 @@ import {
   IndianRupee,
   Sparkles,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:5000/api";
 
 interface FormData {
   businessType: string;

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getProductImage } from "../../utils/productImages";
+import { API_URL } from "../../config/api";
 
 interface Product {
   _id: string;
@@ -78,10 +79,10 @@ declare global {
 }
 
 const PRODUCTS_API_URL =
-  "http://localhost:5000/api/products";
+  `${API_URL}/products`;
 
 const AI_API_URL =
-  "http://localhost:5000/api/ai/chat";
+  `${API_URL}/ai/chat`;
 
 const initialMessage: Message = {
   id: 1,

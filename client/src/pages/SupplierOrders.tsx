@@ -9,8 +9,8 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:5000/api";
 
 interface Product {
   _id?: string;

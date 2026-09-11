@@ -9,8 +9,8 @@ import {
   RefreshCw,
   AlertTriangle,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:5000/api";
 
 interface OrderItem {
   _id?: string;

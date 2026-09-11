@@ -11,8 +11,8 @@ import {
   Loader2,
   AlertTriangle,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:5000/api";
 
 interface SupplierProfile {
   businessName: string;

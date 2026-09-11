@@ -10,6 +10,7 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
 interface FormData {
   businessName: string;
@@ -146,7 +147,7 @@ function SupplierOnboarding() {
         .filter(Boolean);
 
       const response = await fetch(
-        "http://localhost:5000/api/users/supplier-profile",
+        `${API_URL}/users/supplier-profile`,
         {
           method: "PUT",
           headers: {

@@ -13,6 +13,7 @@ import {
 
 import { useCart } from "../context/CartContext";
 import { getProductImage } from "../utils/productImages";
+import { API_URL } from "../config/api";
 
 interface Supplier {
   _id: string;
@@ -37,7 +38,6 @@ interface Product {
   updatedAt?: string;
 }
 
-const API_URL = "http://localhost:5000/api";
 
 const Marketplace = () => {
   const [products, setProducts] = useState<Product[]>([]);

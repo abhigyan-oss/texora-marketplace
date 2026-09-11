@@ -6,6 +6,7 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Register = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL}/auth/register`,
         {
           method: "POST",
 

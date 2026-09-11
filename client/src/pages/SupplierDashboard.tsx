@@ -11,8 +11,8 @@ import {
   Loader2,
   RefreshCw,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:5000/api";
 
 const SupplierDashboard = () => {
   const [products, setProducts] = useState<any[]>([]);

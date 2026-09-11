@@ -9,8 +9,8 @@ import {
 } from "lucide-react";
 
 import { useCart } from "../context/CartContext";
+import { API_URL } from "../config/api";
 
-const API_URL = "http://localhost:5000/api";
 
 interface FormData {
   fullName: string;

@@ -12,6 +12,7 @@ import {
 
 import { useCart } from "../context/CartContext";
 import { getProductImage } from "../utils/productImages";
+import { API_URL } from "../config/api";
 
 interface Product {
   _id: string;
@@ -39,7 +40,6 @@ interface Product {
   };
 }
 
-const API_URL = "http://localhost:5000/api";
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
