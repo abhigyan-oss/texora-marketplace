@@ -149,76 +149,238 @@ const Marketplace = () => {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
+    // ==========================================
     // SEARCH
+    // ==========================================
+
     if (search.trim()) {
-      const searchTerm = search.toLowerCase().trim();
+      const searchTerm = search
+        .toLowerCase()
+        .replace(/,/g, "")
+        .trim();
 
-      result = result.filter((product) => {
-        const supplierName =
-          typeof product.supplier === "string"
-            ? product.supplier
-            : product.supplier?.name || "";
+      // ------------------------------------------
+      // EXTRACT MAXIMUM PRICE
+      // ------------------------------------------
+      //
+      // Examples:
+      // "under ₹300"
+      // "below 500"
+      // "less than ₹400"
+      // "upto ₹350"
+      // "up to 300"
+      // "within ₹500"
+      //
 
-        const searchableText = `
-          ${product.name}
-          ${product.description}
-          ${product.category}
-          ${product.material}
-          ${product.color}
-          ${supplierName}
-        `.toLowerCase();
+      const priceMatch = searchTerm.match(
+        /(?:under|below|less than|upto|up to|within)\s*₹?\s*(\d+)/i
+      );
 
-        // ------------------------------------------
-        // SMART CATEGORY SEARCH
-        // ------------------------------------------
+      const searchPriceLimit = priceMatch
+        ? Number(priceMatch[1])
+        : null;
 
-        const categoryAliases: Record<string, string[]> = {
-          technical: [
-            "denim",
-            "rayon",
-            "synthetic",
-            "technical",
-          ],
+      // ------------------------------------------
+      // DETECT MATERIALS
+      // ------------------------------------------
 
-          wholesale: [
-            "cotton",
-            "linen",
-            "denim",
-            "rayon",
-            "velvet",
-            "satin",
-            "wool",
-          ],
+      const materialKeywords = [
+        "cotton",
+        "linen",
+        "denim",
+        "silk",
+        "rayon",
+        "velvet",
+        "satin",
+        "polyester",
+        "viscose",
+        "wool",
+        "nylon",
+      ];
 
-          apparel: [
-            "cotton",
-            "linen",
-            "denim",
-            "rayon",
-            "silk",
-            "satin",
-          ],
+      const detectedMaterials = materialKeywords.filter(
+        (material) => searchTerm.includes(material)
+      );
 
-          "home textiles": [
-            "linen",
-            "velvet",
-            "cotton",
-          ],
-        };
+      // ------------------------------------------
+      // SMART CATEGORY SEARCH
+      // ------------------------------------------
 
-        const aliases = categoryAliases[searchTerm];
+      const categoryAliases: Record<string, string[]> = {
+        technical: [
+          "denim",
+          "rayon",
+          "synthetic",
+          "technical",
+        ],
 
-        if (aliases) {
+        wholesale: [
+          "cotton",
+          "linen",
+          "denim",
+          "rayon",
+          "velvet",
+          "satin",
+          "wool",
+        ],
+
+        apparel: [
+          "cotton",
+          "linen",
+          "denim",
+          "rayon",
+          "silk",
+          "satin",
+        ],
+
+        "home textiles": [
+          "linen",
+          "velvet",
+          "cotton",
+        ],
+      };
+
+      const aliases = categoryAliases[searchTerm];
+
+      // ------------------------------------------
+      // CATEGORY ALIAS SEARCH
+      // ------------------------------------------
+
+      if (aliases) {
+        result = result.filter((product) => {
+          const supplierName =
+            typeof product.supplier === "string"
+              ? product.supplier
+              : product.supplier?.name || "";
+
+          const searchableText = `
+            ${product.name}
+            ${product.description}
+            ${product.category}
+            ${product.material}
+            ${product.color}
+            ${supplierName}
+          `.toLowerCase();
+
           return aliases.some((keyword) =>
             searchableText.includes(keyword)
           );
-        }
+        });
+      }
 
-        return searchableText.includes(searchTerm);
-      });
+      // ------------------------------------------
+      // NATURAL LANGUAGE SEARCH
+      // ------------------------------------------
+
+      else if (
+        detectedMaterials.length > 0 ||
+        searchPriceLimit !== null
+      ) {
+        result = result.filter((product) => {
+          const supplierName =
+            typeof product.supplier === "string"
+              ? product.supplier
+              : product.supplier?.name || "";
+
+          const searchableText = `
+            ${product.name}
+            ${product.description}
+            ${product.category}
+            ${product.material}
+            ${product.color}
+            ${supplierName}
+          `.toLowerCase();
+
+          // MATERIAL MATCH
+          const matchesMaterial =
+            detectedMaterials.length === 0 ||
+            detectedMaterials.some((material) =>
+              searchableText.includes(material)
+            );
+
+          // PRICE MATCH
+          const productPrice = Number(product.price);
+
+          const matchesPrice =
+            searchPriceLimit === null ||
+            (!Number.isNaN(productPrice) &&
+              productPrice <= searchPriceLimit);
+
+          return matchesMaterial && matchesPrice;
+        });
+      }
+
+      // ------------------------------------------
+      // NORMAL KEYWORD SEARCH
+      // ------------------------------------------
+
+      else {
+        const ignoredWords = [
+          "find",
+          "show",
+          "search",
+          "give",
+          "me",
+          "some",
+          "fabric",
+          "fabrics",
+          "products",
+          "product",
+          "best",
+          "the",
+          "for",
+          "with",
+          "under",
+          "below",
+          "less",
+          "than",
+          "upto",
+          "up",
+          "to",
+          "within",
+          "price",
+          "cheap",
+          "available",
+          "please",
+          "looking",
+          "look",
+          "need",
+          "want",
+        ];
+
+        const words = searchTerm
+          .split(/\s+/)
+          .filter((word) => word.length >= 3)
+          .filter(
+            (word) => !ignoredWords.includes(word)
+          );
+
+        result = result.filter((product) => {
+          const supplierName =
+            typeof product.supplier === "string"
+              ? product.supplier
+              : product.supplier?.name || "";
+
+          const searchableText = `
+            ${product.name}
+            ${product.description}
+            ${product.category}
+            ${product.material}
+            ${product.color}
+            ${supplierName}
+          `.toLowerCase();
+
+          return words.some((word) =>
+            searchableText.includes(word)
+          );
+        });
+      }
     }
 
+    // ==========================================
     // CATEGORY
+    // ==========================================
+
     if (selectedCategory !== "All") {
       result = result.filter(
         (product) =>
@@ -227,7 +389,10 @@ const Marketplace = () => {
       );
     }
 
-    // MAX PRICE
+    // ==========================================
+    // MAX PRICE FILTER
+    // ==========================================
+
     if (maxPrice) {
       const priceLimit = Number(maxPrice);
 
@@ -238,7 +403,10 @@ const Marketplace = () => {
       }
     }
 
+    // ==========================================
     // SORT
+    // ==========================================
+
     if (sortBy === "low-high") {
       result.sort((a, b) => a.price - b.price);
     }

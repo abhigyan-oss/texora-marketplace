@@ -55,6 +55,10 @@ const ProductDetails = () => {
   const [addedToCart, setAddedToCart] =
     useState(false);
 
+  // ==========================================
+  // FETCH PRODUCT
+  // ==========================================
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -167,6 +171,25 @@ const ProductDetails = () => {
   const totalPrice =
     Number(product.price) * quantity;
 
+  /*
+   * IMPORTANT:
+   *
+   * Product Details uses the SAME image
+   * mapping used by:
+   *
+   * - Texora Homepage
+   * - Featured Collection
+   * - Marketplace
+   * - AI Assistant
+   *
+   * We intentionally DO NOT use:
+   *
+   * product.images[0]
+   *
+   * because those MongoDB images may be
+   * different from the local Texora images.
+   */
+
   const productImage = getProductImage(
     product.name,
     product.category
@@ -213,8 +236,8 @@ const ProductDetails = () => {
         name: product.name,
         price: Number(product.price),
 
-        // Use the same mapped image as Marketplace
-        // and Cart.
+        // Use exactly the same mapped image
+        // displayed on this page.
         images: [productImage],
 
         supplier:
@@ -238,6 +261,10 @@ const ProductDetails = () => {
       setAddedToCart(false);
     }, 2500);
   };
+
+  // ==========================================
+  // RENDER
+  // ==========================================
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -267,6 +294,10 @@ const ProductDetails = () => {
                 src={productImage}
                 alt={product.name}
                 className="h-[320px] w-full object-cover sm:h-[520px]"
+                onError={(event) => {
+                  event.currentTarget.style.display =
+                    "none";
+                }}
               />
             </div>
 

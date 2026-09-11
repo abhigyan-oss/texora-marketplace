@@ -16,44 +16,58 @@ export const getProductImage = (
   const productName = (name || "").toLowerCase().trim();
   const productCategory = (category || "").toLowerCase().trim();
 
-  // =========================
-  // COTTON
-  // =========================
+  // ==========================================
+  // PRODUCT-SPECIFIC IMAGES
+  // ==========================================
 
+  // Cotton
   if (productName.includes("organic cotton")) {
     return cotton1;
   }
 
-  if (productName.includes("twill")) {
+  if (productName.includes("cotton twill")) {
     return cotton2;
   }
+
+  // Linen
+  if (productName.includes("premium linen")) {
+    return linen1;
+  }
+
+  // Denim
+  if (productName.includes("classic denim")) {
+    return denim1;
+  }
+
+  // Rayon
+  if (productName.includes("premium rayon")) {
+    return linen2;
+  }
+
+  // Velvet
+  if (productName.includes("luxury velvet")) {
+    return denim2;
+  }
+
+  // Satin
+  if (productName.includes("premium satin")) {
+    return linen3;
+  }
+
+  // ==========================================
+  // CATEGORY FALLBACKS
+  // ==========================================
 
   if (productCategory === "cotton") {
     return cotton3;
   }
 
-  // =========================
-  // DENIM
-  // =========================
+  if (productCategory === "linen") {
+    return linen2;
+  }
 
   if (productCategory === "denim") {
     return denim1;
-  }
-
-  // =========================
-  // LINEN
-  // =========================
-
-  if (productCategory === "linen") {
-    return linen1;
-  }
-
-  // =========================
-  // OTHER FABRICS
-  // =========================
-
-  if (productCategory === "silk") {
-    return linen2;
   }
 
   if (productCategory === "rayon") {
@@ -68,10 +82,17 @@ export const getProductImage = (
     return linen3;
   }
 
+  if (productCategory === "silk") {
+    return linen2;
+  }
+
   if (productCategory === "wool") {
     return cotton2;
   }
 
-  // Default
+  // ==========================================
+  // FINAL FALLBACK
+  // ==========================================
+
   return cotton1;
 };

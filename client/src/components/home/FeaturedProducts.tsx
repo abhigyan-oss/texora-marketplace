@@ -7,6 +7,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { getProductImage } from "../../utils/productImages";
 
 interface Supplier {
   _id: string;
@@ -115,12 +116,17 @@ const FeaturedProducts = () => {
       stock
     );
 
+    const productImage = getProductImage(
+      product.name,
+      product.category
+    );
+
     addToCart(
       {
         id: product._id,
         name: product.name,
         price: product.price,
-        images: product.images || [],
+        images: [productImage],
         unit: product.unit,
 
         supplier:
@@ -261,11 +267,15 @@ const FeaturedProducts = () => {
             .slice(0, 4)
             .map((product) => {
 
-              const image =
-                product.images &&
-                product.images.length > 0
-                  ? product.images[0]
-                  : "";
+              /*
+               * IMPORTANT:
+               * Use the same image mapping as Marketplace
+               * and AI Assistant.
+               */
+              const image = getProductImage(
+                product.name,
+                product.category
+              );
 
               const minimumOrder =
                 product.minimumOrder ??
